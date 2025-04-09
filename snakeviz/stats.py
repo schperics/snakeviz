@@ -1,4 +1,6 @@
+import re
 import os.path
+
 from itertools import chain
 
 from tornado.escape import xhtml_escape
@@ -19,6 +21,15 @@ def table_rows(stats):
         flf = xhtml_escape('{}:{}({})'.format(
             os.path.basename(k[0]), k[1], k[2]))
         name = '{}:{}({})'.format(*k)
+        if '.py' in flf:
+            if ':' in flf:
+                file, line = flf.split(':', maxsplit=1)
+                line = re.match(r'^\d+', line).group()
+            else:
+                file = flf
+                line = 1
+            file = os.path.abspath(os.path.join(os.path.dirname(name), file))
+            flf = f"""<a href="pycharm://open?file={file}&line={line}">{flf}</a>"""
 
         if v[0] == v[1]:
             calls = str(v[0])
