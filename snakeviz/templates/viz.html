@@ -99,6 +99,7 @@
             <th title="Cumulative time spent in this function and all sub-functions.">cumtime</th>
             <th title="`cumtime` divided by `ncalls`">percall</th>
             <th title="File name and line number were the function is defined, and the function’s name.">filename:lineno(function)</th>
+            <th title="Change graph and move to pycharm">링크 & 업데이트</th>
           </tr>
         </thead>
       </table>
@@ -134,16 +135,31 @@
               '_': function (row) {return row[0][0];},
               'sort': function (row) {return row[0][1]}
              }},
-            {'type': 'num', 'searchable': 'false'},
-            {'type': 'num', 'searchable': 'false'},
-            {'type': 'num', 'searchable': 'false'},
-            {'type': 'num', 'searchable': 'false'},
-            {}
+            {'type': 'num', 'searchable': 'false', 'className': 'update_graph'},
+            {'type': 'num', 'searchable': 'false', 'className': 'update_graph'},
+            {'type': 'num', 'searchable': 'false', 'className': 'update_graph'},
+            {'type': 'num', 'searchable': 'false', 'className': 'update_graph'},
+            {
+              'className':'link',
+              'render': function(data, type, row, meta) {
+                if (row[7]) {
+                  return `<div class="cursor-pointer" style="color:dodgerblue;">${data}</div>`;
+                } else {
+                  return `${data}`;
+                }
+              }
+            },
+            {
+              'className':'update_graph link',
+              'render': function(data, type, row, meta) {
+                return `<div class="cursor-pointer"><img src="/static/images/link.png" style="width: 16px"/></div>`
+              }
+            }
           ],
           'order': [1, 'desc'],
           'paging': false
         }).api();
-        $('#pstats-table tbody').on('click', 'tr', function() {
+        $('td.update_graph').on('click', function () {
           var name = table.row(this).data()[6];
           sv_root_func_name = name;
           sv_draw_vis(name);
@@ -151,7 +167,13 @@
           sv_update_call_stack_list();
           $('#resetbutton-zoom').prop('disabled', true);
           $('#resetbutton-root').prop('disabled', false);
-        }).on('mouseenter', 'tr', function () {
+        });
+        $('td.link').on('click', function () {
+          const url = table.row(this).data()[7];
+          if (url)
+            window.open(table.row(this).data()[7], "_blank");
+        });
+        $('#pstats-table tbody').on('mouseenter', 'tr', function () {
           $(this).children('td').addClass('data-table-hover');
         }).on('mouseleave', 'tr', function () {
           $(this).children('td').removeClass('data-table-hover');

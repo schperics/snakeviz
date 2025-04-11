@@ -21,6 +21,7 @@ def table_rows(stats):
         flf = xhtml_escape('{}:{}({})'.format(
             os.path.basename(k[0]), k[1], k[2]))
         name = '{}:{}({})'.format(*k)
+        link = ''
         if '.py' in flf:
             if ':' in flf:
                 file, line = flf.split(':', maxsplit=1)
@@ -29,7 +30,7 @@ def table_rows(stats):
                 file = flf
                 line = 1
             file = os.path.abspath(os.path.join(os.path.dirname(name), file))
-            flf = f"""<a href="pycharm://open?file={file}&line={line}">{flf}</a>"""
+            link = f"pycharm://open?file={file}&line={line}"
 
         if v[0] == v[1]:
             calls = str(v[0])
@@ -45,7 +46,7 @@ def table_rows(stats):
 
         rows.append(
             [[calls, v[1]], tot_time, tot_time_per,
-             cum_time, cum_time_per, flf, name])
+             cum_time, cum_time_per, flf, name, link])
 
     return rows
 

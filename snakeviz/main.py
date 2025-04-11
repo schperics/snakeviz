@@ -20,6 +20,9 @@ settings = {
 
 class VizHandler(tornado.web.RequestHandler):
     def get(self, profile_name):
+        self.set_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.set_header("Pragma", "no-cache")
+        self.set_header("Expires", "0")
         abspath = os.path.abspath(profile_name)
         if os.path.isdir(abspath):
             self._list_dir(abspath)

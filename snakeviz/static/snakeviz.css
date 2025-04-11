@@ -313,3 +313,7 @@ g#container rect, g#container path {
   }
 
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
