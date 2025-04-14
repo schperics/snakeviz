@@ -93,7 +93,28 @@ var reset_vis = function reset_vis (style) {
 
 // This is the function that runs whenever the user clicks on an SVG
 // element to trigger zooming.
+var prevent_click_event = false;
 var click = function click(d) {
+  // open code through pycharm
+  prevent_click_event = false;
+  setTimeout(
+    () => {
+      if (prevent_click_event)
+        return;
+      if (d.display_name.indexOf('.py') < 0)
+        return;
+      const line_idx = d.name.lastIndexOf(':');
+      const func_idx = d.name.lastIndexOf('(');
+      const file = d.name.slice(0, line_idx);
+      const line = d.name.slice(line_idx + 1, func_idx)
+      window.open(`pycharm://open?file=${file}&line=${line}`, "_blank");
+    },
+    250,
+  )
+}
+
+var double_click = function double_click(d) {
+  prevent_click_event = true;
   // check whether we need to do anything
   // (e.g. that the user hasn't clicked on the original root node)
   if (d.name === sv_root_func_name) {
@@ -244,6 +265,7 @@ var drawSunburst = function drawSunburst(json) {
     .attr("fill-rule", "evenodd")
     .style("fill", color)
     .on('click', click)
+    .on('dblclick', double_click)
     .call(apply_mouseover);
 };
 
@@ -270,6 +292,7 @@ var drawIcicle = function drawIcicle(json) {
       .attr("fill-rule", "evenodd")
       .attr("fill", color)
       .on('click', click)
+      .on('dblclick', double_click)
       .call(apply_mouseover);
 
   var labels = vis.data([json]).selectAll("text")
